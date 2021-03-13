@@ -1,0 +1,188 @@
+\NeedsTeXFormat{LaTeX2e}
+%\ProvidesClass{ltjsarticle}
+\ProvidesPackage{docstyleforart}
+%
+\RequirePackage{luatexja}
+\RequirePackage[truedimen,margin=0.14\paperwidth]{geometry}
+\RequirePackage[luatex]{graphicx}
+\RequirePackage[luatex,table,hyperref]{xcolor}
+\RequirePackage{amssymb,mathtools}
+\RequirePackage{float}
+\RequirePackage[unicode=true,linktoc=all,%
+bookmarksnumbered=true,bookmarksopen=true,%
+colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
+\RequirePackage[nameinlink]{cleveref}
+\RequirePackage{caption}
+\DeclareCaptionLabelSeparator{colon}{：}
+\RequirePackage[subrefformat=parens]{subcaption}
+\RequirePackage{wrapfig}
+\RequirePackage{comment,fontawesome5,xparse}
+%
+\RequirePackage{tcolorbox,tikzlings}
+\tcbuselibrary{raster,skins,xparse,breakable}
+\usetikzlibrary{shadings,calc}
+\RequirePackage{varwidth}
+\RequirePackage[explicit,pagestyles]{titlesec}
+\RequirePackage{titletoc}
+\newif\if@link
+\@linkfalse
+\DeclareTColorBox{shapebox2}{ O{blue} m d"" !O{} }{enhanced,colframe=#1!50!black,colback=#1!10!white,
+	colbacktitle=#1!5!yellow!10!white, fonttitle=\large\bfseries,coltitle=black,IfValueTF={#3}{watermark text={#3}}{},
+	attach boxed title to top center= {yshift=-0.25mm-\tcboxedtitleheight/2,yshifttext=2mm-\tcboxedtitleheight/2}, 
+	boxed title style={boxrule=0.5mm, frame code={ \path[tcb fill frame] ([xshift=-6mm]frame.west) -- (frame.north west) -- (frame.north east) -- ([xshift=6mm]frame.east) -- (frame.south east) -- (frame.south west) -- cycle; }, 
+		interior code={ \path[tcb fill interior] ([xshift=-3mm]interior.west) -- (interior.north west) -- (interior.north east) -- ([xshift=3mm]interior.east) -- (interior.south east) -- (interior.south west) -- cycle;} },
+	title={#2},#4}
+%
+\DeclareOption{withlink}{\@linktrue}
+%
+\DeclareOption{sec=normal}{
+	\titleformat{\section}[hang]{\normalfont\large\bfseries}{\thesection}{1em}{#1\hfill\if@link \hyperlink{mokuji}{\color{magenta}\faIcon{reply-all}}\else \fi}[]
+	\titleformat{name=\section,numberless}[hang]{\normalfont\large\bfseries}{#1}{0pt}{\hfill\if@link \hyperlink{mokuji}{\color{magenta}\faIcon{reply-all}}\else \fi}[]
+}
+%
+\DeclareOption{sec=1}{
+	\titleformat{\section}[display]{\normalfont\Large\bfseries}{}{0pt}{
+		\begin{tcolorbox}[enhanced,top=3mm,bottom=3mm,spread sidewards,
+			frame style={left color=black,right color=cyan!60!},coltext=white,interior hidden,
+			fuzzy shadow={0mm}{-1mm}{-1.5mm}{0.4mm}{black},borderline horizontal={3pt}{0pt}{black},
+			borderline north={2pt}{6pt}{black},borderline south={2pt}{6pt}{black}]
+			\hspace*{0.14\paperwidth}\thesection~~#1\hfill\if@link \hyperlink{mokuji}{\color{magenta}\faIcon{reply-all}}\else \fi
+		\end{tcolorbox}
+	}[]
+	\titleformat{\subsection}[display]{\normalfont\large\bfseries}{}{0pt}{
+		\begin{tcolorbox}[enhanced,spread sidewards,drop fuzzy shadow south,coltext=white,
+			frame style={left color=black,right color=yellow!50!white},interior hidden,
+			borderline horizontal={2pt}{0pt}{black},
+			borderline north={1pt}{3pt}{black},borderline south={1pt}{3pt}{black}]
+			\hspace*{0.14\paperwidth}\thesubsection~~#1
+		\end{tcolorbox}
+	}[]
+	\titleformat{name=\section,numberless}[display]{\normalfont\Large\bfseries}{}{0pt}{
+		\begin{tcolorbox}[enhanced,top=3mm,bottom=3mm,spread sidewards,drop fuzzy shadow south,
+			frame style={left color=white,right color=yellow!50!gray!60!white},interior hidden,
+			borderline horizontal={3pt}{0pt}{black},
+			borderline north={2pt}{6pt}{black},borderline south={2pt}{6pt}{black}]
+			\hspace*{0.14\paperwidth}#1\hfill\if@link \hyperlink{mokuji}{\color{magenta}\faIcon{reply-all}}\else \fi
+		\end{tcolorbox}
+	}[]
+	\titleformat{name=\subsection,numberless}[display]{\normalfont\large\bfseries}{}{0pt}{
+		\begin{tcolorbox}[enhanced,spread sidewards,drop fuzzy shadow south,coltext=white,
+			frame style={left color=black,right color=yellow!50!white},interior hidden,
+			borderline horizontal={2pt}{0pt}{black},
+			borderline north={1pt}{3pt}{black},borderline south={1pt}{3pt}{black}]
+			\hspace*{0.14\paperwidth}#1
+		\end{tcolorbox}
+	}[]
+\titlespacing{\section}{0pt}{-2em}{-2em}
+\titlespacing{\subsection}{0pt}{-2em}{-2em}
+}
+%
+\DeclareOption{sec=2}{
+\titleformat{\section}[hang]{\Large\bfseries}{\begin{tikzpicture}
+		\pgfmathparse{100*rnd}
+		\edef\tmp{\pgfmathresult}
+		\pgfmathparse{100*sin(rnd*pi/2 r)}
+		\edef\tmq{\pgfmathresult}
+		\filldraw[line width=3pt,draw=cyan!\tmp!magenta!\tmq!yellow,fill=white,rounded corners] (0,0) rectangle (\linewidth-3pt,1);
+		\tikzling[xshift=1.5em,yshift=0.1mm,scale=0.4,graduate=black,tassel=red]
+		\node[] at (\linewidth/2,0.5) {\thesection~~#1};
+		\node at (\linewidth-2em,0.5) {\footnotesize\if@link \hyperlink{mokuji}{\color{magenta}\faIcon{reply-all}}\else \fi};
+	\end{tikzpicture}
+}{-7pt}{}[]
+\titleformat{\subsection}[hang]{\normalfont\large\bfseries}{}{0pt}{
+\thesubsection\quad#1
+}[]
+\titleformat{name=\section,numberless}[hang]{\Large\bfseries}{\begin{tikzpicture}
+		\pgfmathparse{100*rnd}
+		\edef\tmp{\pgfmathresult}
+		\pgfmathparse{100*sin(rnd*pi/2 r)}
+		\edef\tmq{\pgfmathresult}
+		\filldraw[line width=3pt,draw=cyan!\tmp!magenta!\tmq!yellow,fill=white,rounded corners] (0,0) rectangle (\linewidth-3pt,1);
+		\tikzling[xshift=1.5em,yshift=0.1mm,scale=0.4,graduate=black,tassel=red]
+		\node[] at (\linewidth/2,0.5) {#1};
+		\node at (\linewidth-2em,0.5) {\footnotesize\if@link \hyperlink{mokuji}{\color{magenta}\faIcon{reply-all}}\else \fi};
+	\end{tikzpicture}
+}{-7pt}{}[]
+\titleformat{name=\subsection,numberless}[hang]{\normalfont\large\bfseries}{}{0pt}{#1}[]
+\titlespacing{\section}{0pt}{4mm}{2mm}
+}
+%
+\DeclareOption{toc=normal}{
+\renewcommand{\tableofcontents}[1][c]{%
+\hypertarget{mokuji}{}\noindent
+\makebox[\linewidth][#1]{\Large\bfseries 目次}\bigskip\@starttoc{toc}\bigskip}
+}
+%
+\DeclareOption{toc=1}{
+\renewcommand{\tableofcontents}[1][orange]{%
+\hypertarget{mokuji}{}\begin{shapebox2}[#1]{目次}"Contents"[drop fuzzy shadow,breakable]
+\@starttoc{toc}\end{shapebox2}}
+}
+%
+\ExecuteOptions{toc=normal}
+\ProcessOptions\relax
+%
+\titlecontents{section}[1em]{}{\makebox[2em][l]{\thecontentslabel}}{}{\quad\titlerule*[1em]{・}　\thecontentspage}
+\titlecontents{subsection}[3em]{}{\makebox[2.5em][l]{\thecontentslabel}}{}{\quad\titlerule*[1em]{・}　\thecontentspage}
+\titlecontents{subsubsection}[5.5em]{}{\makebox[3em][l]{\thecontentslabel}}{}{\titlerule*[1em]{・}　\thecontentspage}
+%
+\newcommand{\crefrangeconjunction}{{〜}}%
+\newcommand{\crefrangepreconjunction}{}%
+\newcommand{\crefrangepostconjunction}{}%
+\newcommand{\crefpairconjunction}{, }%
+\newcommand{\crefmiddleconjunction}{, }%
+\newcommand{\creflastconjunction}{, }%
+\newcommand{\crefpairgroupconjunction}{, }%
+\newcommand{\crefmiddlegroupconjunction}{, }%
+\newcommand{\creflastgroupconjunction}{, }%
+
+\crefname{equation}{式}{式}%
+\crefname{figure}{図}{図}%
+\crefname{subfigure}{図}{図}%
+\crefname{table}{表}{表}%
+\crefname{subtable}{表}{表}%
+
+\crefname{appendix}{付録}{付録}%
+\crefname{subappendix}{付録}{付録}%
+\crefname{subsubappendix}{付録}{付録}%
+\crefname{subsubsubappendix}{付録}{付録}%
+
+\crefname{section}{第}{第}
+\creflabelformat{section}{#2#1節#3}
+\crefname{subsection}{第}{第}
+\creflabelformat{subsection}{#2#1節#3}
+\crefformat{equation}{(#2#1#3)}
+\crefformat{page}{#2#1ページ#3}%
+\crefrangeformat{page}{#3#1#4{〜}#5#2#6{ページ}}%
+\crefmultiformat{page}{#2#1#3{ページ}}{, #2#1#3{ページ}}{, #2#1#3}{, #2#1#3{ページ}}%
+%\crefformat{section}{#2#1#3{節}}%
+\crefrangeformat{section}{#3#1#4{〜}#5#2#6{節}}%
+\crefmultiformat{section}{#2#1#3{節}}{, #2#1#3{節}}{, #2#1#3}{, #2#1#3{節}}%
+\crefformat{subsection}{#2#1#3{節}}%
+\crefrangeformat{subsection}{#3#1#4{〜}#5#2#6{節}}%
+\crefmultiformat{subsection}{#2#1#3{節}}{, #2#1#3{節}}{, #2#1#3}{, #2#1#3{節}}%
+\crefformat{subsubsection}{#2#1#3{節}}%
+\crefrangeformat{subsubsection}{#3#1#4{〜}#5#2#6{節}}%
+\crefmultiformat{subsubsection}{#2#1#3{節}}{, #2#1#3{節}}{, #2#1#3}{, #2#1#3{節}}%
+%
+\newpagestyle{ps=2}[]{
+	\sethead{}{}{}
+	\setfoot{}{\raisebox{-1em}{\begin{tikzpicture}
+			\tikzling[scale=0.5,speech={\thepage}]
+	\end{tikzpicture}}}{}
+}
+\newpagestyle{ps=1}[]{
+	\sethead{\begin{tikzpicture}[remember picture,overlay]
+			\fill[top color=green!60!] (current page.north east) rectangle ([yshift=-\paperwidth/8]current page.north west);
+			\fill[bottom color=yellow!60!,top color=white] (current page.south east) rectangle ([yshift=\paperwidth/8]current page.south west);
+	\end{tikzpicture}}{\S\,\thesection\quad\sectiontitle}{}
+	\setfoot{}{\large\thepage}{}
+}
+\newpagestyle{normalps}[]{
+	\sethead{}{\thesection~~\sectiontitle}{}
+	\headrule\footrule
+	\setfoot{}{\thepage}{}
+}
+%
+\renewcommand*{\figurename}{\faIcon{arrow-circle-up}図}
+\renewcommand*{\tablename}{\faIcon{arrow-circle-down}表}
