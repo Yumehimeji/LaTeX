@@ -1,6 +1,6 @@
 # LaTeX
 ## 概要
-LaTeXに関する色々。ほぼ全てのファイルはエンジンにLuaLaTeXを使用している。
+LaTeXに関する色々。エンジンにLuaLaTeXを使用している。
 
 無断で使用可能。
 ## mydocstyle.sty
