@@ -1,0 +1,210 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{YSdsforrep}
+%
+\RequirePackage{luatexja}
+\RequirePackage[explicit,pagestyles]{titlesec}
+\RequirePackage{titletoc}
+\RequirePackage[truedimen,margin=0.14\paperwidth]{geometry}
+\RequirePackage[luatex]{graphicx}
+\RequirePackage[luatex,table,hyperref]{xcolor}
+\RequirePackage{amssymb,mathtools}
+\RequirePackage{float}
+\RequirePackage[unicode=true,linktoc=all,%
+bookmarksnumbered=true,bookmarksopen=true,%
+colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
+\RequirePackage[nameinlink]{cleveref}
+\RequirePackage{caption}
+\DeclareCaptionLabelSeparator{colon}{：}
+\RequirePackage{tcolorbox,tikzlings,fontawesome5}
+\tcbuselibrary{raster,skins,xparse,breakable}
+\usetikzlibrary{shadings,calc}
+\RequirePackage{varwidth,xparse}
+%
+\DeclareTColorBox{shapebox2}{ O{blue} m d"" !O{} }{enhanced,colframe=#1!50!black,colback=#1!10!white,
+	colbacktitle=#1!5!yellow!10!white, fonttitle=\large\bfseries,coltitle=black,IfValueTF={#3}{watermark text={#3}}{},
+	attach boxed title to top center= {yshift=-0.25mm-\tcboxedtitleheight/2,yshifttext=2mm-\tcboxedtitleheight/2}, 
+	boxed title style={boxrule=0.5mm, frame code={ \path[tcb fill frame] ([xshift=-6mm]frame.west) -- (frame.north west) -- (frame.north east) -- ([xshift=6mm]frame.east) -- (frame.south east) -- (frame.south west) -- cycle; }, 
+		interior code={ \path[tcb fill interior] ([xshift=-3mm]interior.west) -- (interior.north west) -- (interior.north east) -- ([xshift=3mm]interior.east) -- (interior.south east) -- (interior.south west) -- cycle;} },
+	title={#2},#4}
+\newcommand{\PartialToc}{\vspace{1em}\begin{center}
+		\normalsize\normalfont{\Large\bfseries 目次}\smallskip
+		\startcontents[chapters]
+		\printcontents[chapters]{}{1}[2]{}
+\end{center}\vspace{-3em}}
+\newif\if@link
+\@linkfalse
+\newif\if@ptc
+\@ptcfalse
+%
+\DeclareOption{withlink}{\@linktrue}
+%
+\DeclareOption{sec=normal}{
+\titleformat{\chapter}[display]{\huge\bfseries}{\hypertarget{mokuji\thechapter}{}第\thechapter 章}{1ex}{#1\hfill\if@link \hyperlink{mokuji}{\footnotesize\color{magenta}\faIcon{reply-all}}\else \fi}[\if@ptc{\PartialToc}\else \fi]
+\titleformat{\section}[hang]{\large\bfseries}{\thesection}{1em}{#1\hfill\if@link \hyperlink{mokuji\thechapter}{\footnotesize\color{magenta}\faIcon{reply}}\else \fi}[]
+\titleformat{name=\section,numberless}[hang]{\large\bfseries}{#1}{0pt}{\hfill\if@link \hyperlink{mokuji\thechapter}{\footnotesize\color{magenta}\faIcon{reply}}\else \fi}[]
+}
+%
+\DeclareOption{sec=1}{
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries}{}{0pt}{\hypertarget{mokuji\thechapter}{}
+	\begin{tcolorbox}[enhanced,top=10mm,bottom=10mm,spread sidewards,
+		drop fuzzy shadow south,frame style image=goldshade.png,
+		interior hidden,borderline horizontal={4pt}{0pt}{black},
+		borderline north={2pt}{6pt}{black},borderline south={2pt}{6pt}{black}]
+		\centering 第\thechapter 章\\\bigskip#1\if@link \\\vspace{-1em}\hfill\hyperlink{mokuji}{\footnotesize\color{magenta}\faIcon{reply-all}}\else\fi
+	\end{tcolorbox}
+\vspace{-2em}}[\if@ptc{\PartialToc}\else \fi]
+\titleformat{\section}[display]{\normalfont\large\bfseries}{}{0pt}{
+	\begin{tcolorbox}[enhanced,drop fuzzy shadow south,arc=2mm,
+		frame style image=blueshade.png,interior hidden,coltext=white]
+		\thesection\quad#1\hfill\if@link \hyperlink{mokuji\thechapter}{\footnotesize\color{magenta}\faIcon{reply}}\else \fi
+	\end{tcolorbox}
+}[]
+\titleformat{\subsection}[display]{\normalfont\large\bfseries}{}{0pt}{
+	\tcbox[enhanced,arc=0pt,coltext=red!30!black,size=title,drop fuzzy shadow,frame style image=crinklepaper.png,interior hidden]
+		{\thesubsection\quad#1}
+}[]
+\titleformat{name=\section,numberless}[display]{\normalfont\large\bfseries}{}{0pt}{
+	\begin{tcolorbox}[enhanced,drop fuzzy shadow south,arc=2mm,
+		frame style image=blueshade.png,interior hidden,coltext=white]
+		#1\hfill\if@link \hyperlink{mokuji\thechapter}{\footnotesize\color{magenta}\faIcon{reply}}\else \fi
+	\end{tcolorbox}
+}[]
+\titleformat{name=\subsection,numberless}[display]{\normalfont\large\bfseries}{}{0pt}{
+	\tcbox[enhanced,arc=0pt,coltext=red!30!black,size=title,drop fuzzy shadow,frame style image=crinklepaper.png,interior hidden]
+	{#1}
+}[]
+\titlespacing{\chapter}{0pt}{-1em}{30pt}%abovedawn
+\titlespacing{\section}{0pt}{-1.5em}{-1.5em}
+\titlespacing{\subsection}{0pt}{-2em}{-2em}
+}
+%
+\DeclareOption{sec=2}{
+\titleformat{\chapter}[display]{\huge\bfseries}{\hypertarget{mokuji\thechapter}{}
+	\hspace*{-3pt}\begin{tikzpicture}
+		\pgfmathparse{100*rnd}
+		\edef\tmp{\pgfmathresult}
+		\pgfmathparse{100*sin(rnd*pi/2 r)}
+		\edef\tmq{\pgfmathresult}
+		\draw[line width=5pt,color=cyan!\tmp!magenta!\tmq!yellow]
+		(0,0) -- (\linewidth,0) (0,3.8) -- (\linewidth,3.8);
+		\draw[line width=2pt,color=cyan!\tmp!magenta!\tmq!yellow]
+		(0,2) -- (\linewidth,2);
+		\node at (\linewidth/2,1) {#1};
+		\node at (\linewidth/2,2.8) {第\thechapter 章};
+		\node at (\linewidth-2em,0.5) {\footnotesize\if@link \hyperlink{mokuji}{\color{magenta}\faIcon{reply-all}}\else \fi};
+	\end{tikzpicture}}{-1em}{}[
+\if@ptc{\PartialToc}\else \fi]
+\titleformat{\section}[hang]{\Large\bfseries}{\begin{tikzpicture}
+		\pgfmathparse{100*rnd}
+		\edef\tmp{\pgfmathresult}
+		\pgfmathparse{100*sin(rnd*pi/2 r)}
+		\edef\tmq{\pgfmathresult}
+		\filldraw[line width=3pt,draw=cyan!\tmp!magenta!\tmq!yellow,fill=white,rounded corners] (0,0) rectangle (\linewidth-3pt,1);
+		\tikzling[xshift=1.5em,yshift=0.1mm,scale=0.4,graduate=black,tassel=red]
+		\node at (\linewidth/2,0.5) {\thesection~~#1};
+		\node at (\linewidth-2em,0.5) {\footnotesize\if@link \hyperlink{mokuji\thechapter}{\color{magenta}\faIcon{reply}}\else \fi};
+	\end{tikzpicture}
+}{-7pt}{}[]
+\titleformat{\subsection}[hang]{\normalfont\large\bfseries}{\thesubsection}{1em}{
+#1}[]
+\titleformat{name=\section,numberless}[hang]{\Large\bfseries}{\begin{tikzpicture}
+		\pgfmathparse{100*rnd}
+		\edef\tmp{\pgfmathresult}
+		\pgfmathparse{100*sin(rnd*pi/2 r)}
+		\edef\tmq{\pgfmathresult}
+		\filldraw[line width=3pt,draw=cyan!\tmp!magenta!\tmq!yellow,fill=white,rounded corners] (0,0) rectangle (\linewidth-3pt,1);
+		\tikzling[xshift=1.5em,yshift=0.1mm,scale=0.4,graduate=black,tassel=red]
+		\node[] at (\linewidth/2,0.5) {#1};
+		\node at (\linewidth-2em,0.5) {\footnotesize\if@link \hyperlink{mokuji\thechapter}{\color{magenta}\faIcon{reply}}\else \fi};
+	\end{tikzpicture}
+}{-7pt}{}[]
+\titleformat{name=\subsection,numberless}[hang]{\normalfont\large\bfseries}{
+	\thesubsection}{1em}{#1}[]
+\titlespacing{\section}{0pt}{6mm}{0mm}
+}
+%
+\DeclareOption{toc=normal}{
+\renewcommand{\tableofcontents}[1][c]{\thispagestyle{mokuji}
+\hypertarget{mokuji}{}\noindent\makebox[\linewidth][#1]{\LARGE\bfseries 目次}
+\bigskip\@starttoc{toc}\bigskip}
+}
+%
+\DeclareOption{toc=1}{
+\renewcommand{\PartialToc}{\normalsize\normalfont\begin{shapebox2}[yellow]{目次}"Contents"[drop fuzzy shadow,breakable]
+		\startcontents[chapters]
+		\printcontents[chapters]{}{1}[2]{}\end{shapebox2}\vspace{-3em}}
+\renewcommand{\tableofcontents}[1][orange]{\thispagestyle{mokuji}
+\hypertarget{mokuji}{}\begin{shapebox2}[#1]{目次}"Contents"[drop fuzzy shadow,breakable]
+\@starttoc{toc}\end{shapebox2}}
+}
+%
+\DeclareOption{partialtoc}{\@ptctrue
+\setcounter{tocdepth}{0}}
+%
+\ExecuteOptions{toc=normal}
+\ProcessOptions\relax
+%
+\titlecontents{chapter}[0em]{\smallskip\large\bfseries}{\makebox[4em][l]{\thecontentslabel}}{}{\if@ptc\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}\else\hfill\thecontentspage\fi}[\smallskip]
+\titlecontents{section}[1em]{}{\makebox[2.5em][l]{\thecontentslabel}}{}{\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
+\titlecontents{subsection}[3.5em]{}{\makebox[3em][l]{\thecontentslabel}}{}{\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
+\titlecontents{subsubsection}[6.5em]{}{\makebox[4em][l]{\thecontentslabel}}{}{\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
+%
+\newcommand{\crefrangeconjunction}{{〜}}%
+\newcommand{\crefrangepreconjunction}{}%
+\newcommand{\crefrangepostconjunction}{}%
+\newcommand{\crefpairconjunction}{, }%
+\newcommand{\crefmiddleconjunction}{, }%
+\newcommand{\creflastconjunction}{, }%
+\newcommand{\crefpairgroupconjunction}{, }%
+\newcommand{\crefmiddlegroupconjunction}{, }%
+\newcommand{\creflastgroupconjunction}{, }%
+
+\crefname{equation}{式}{式}%
+\crefname{figure}{図}{図}%
+\crefname{subfigure}{図}{図}%
+\crefname{table}{表}{表}%
+\crefname{subtable}{表}{表}%
+
+\crefname{appendix}{付録}{付録}%
+\crefname{subappendix}{付録}{付録}%
+\crefname{subsubappendix}{付録}{付録}%
+\crefname{subsubsubappendix}{付録}{付録}%
+
+\crefname{chapter}{第}{第}
+\creflabelformat{chapter}{#2#1章#3}
+\crefname{section}{第}{第}
+\creflabelformat{section}{#2#1節#3}
+\crefname{subsection}{第}{第}
+\creflabelformat{subsection}{#2#1節#3}
+\crefformat{equation}{(#2#1#3)}
+\crefformat{page}{#2#1ページ#3}%
+\crefrangeformat{page}{#3#1#4{〜}#5#2#6{ページ}}%
+\crefmultiformat{page}{#2#1#3{ページ}}{, #2#1#3{ページ}}{, #2#1#3}{, #2#1#3{ページ}}%
+%\crefformat{section}{#2#1#3{節}}%
+\crefrangeformat{section}{#3#1#4{〜}#5#2#6{節}}%
+\crefmultiformat{section}{#2#1#3{節}}{, #2#1#3{節}}{, #2#1#3}{, #2#1#3{節}}%
+\crefformat{subsection}{#2#1#3{節}}%
+\crefrangeformat{subsection}{#3#1#4{〜}#5#2#6{節}}%
+\crefmultiformat{subsection}{#2#1#3{節}}{, #2#1#3{節}}{, #2#1#3}{, #2#1#3{節}}%
+\crefformat{subsubsection}{#2#1#3{節}}%
+\crefrangeformat{subsubsection}{#3#1#4{〜}#5#2#6{節}}%
+\crefmultiformat{subsubsection}{#2#1#3{節}}{, #2#1#3{節}}{, #2#1#3}{, #2#1#3{節}}%
+%
+\newpagestyle{ps=2}[]{
+	\sethead{}{第\thechapter 章\quad\chaptertitle}{}
+	\setfoot{}{\raisebox{-1em}{\begin{tikzpicture}
+			\tikzling[scale=0.5,speech={\thepage}]
+	\end{tikzpicture}}}{}
+}
+\newpagestyle{ps=1}[]{
+	\sethead{\begin{tikzpicture}[remember picture,overlay]
+			\fill[top color=green!60!] (current page.north east) rectangle ([yshift=-\paperwidth/8]current page.north west);
+			\fill[bottom color=yellow!60!,top color=white] (current page.south east) rectangle ([yshift=\paperwidth/8]current page.south west);
+	\end{tikzpicture}}{第\thechapter 章\quad\chaptertitle}{}
+	\setfoot{}{\large\thepage}{}
+}
+\newpagestyle{normalps}[]{
+	\sethead{}{\thechapter~~\chaptertitle}{}
+	\headrule\footrule
+	\setfoot{}{\thepage}{}
+}
