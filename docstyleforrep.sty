@@ -24,12 +24,12 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 	colbacktitle=#1!5!yellow!10!white, fonttitle=\large\bfseries,coltitle=black,IfValueTF={#3}{watermark text={#3}}{},
 	attach boxed title to top center= {yshift=-0.25mm-\tcboxedtitleheight/2,yshifttext=2mm-\tcboxedtitleheight/2}, 
 	boxed title style={boxrule=0.5mm, frame code={ \path[tcb fill frame] ([xshift=-6mm]frame.west) -- (frame.north west) -- (frame.north east) -- ([xshift=6mm]frame.east) -- (frame.south east) -- (frame.south west) -- cycle; }, 
-		interior code={ \path[tcb fill interior] ([xshift=-3mm]interior.west) -- (interior.north west) -- (interior.north east) -- ([xshift=3mm]interior.east) -- (interior.south east) -- (interior.south west) -- cycle;} },
+	interior code={ \path[tcb fill interior] ([xshift=-3mm]interior.west) -- (interior.north west) -- (interior.north east) -- ([xshift=3mm]interior.east) -- (interior.south east) -- (interior.south west) -- cycle;} },
 	title={#2},#4}
 \newcommand{\PartialToc}{\vspace{1em}\begin{center}
-		\normalsize\normalfont{\Large\bfseries 目次}\smallskip
-		\startcontents[chapters]
-		\printcontents[chapters]{}{1}[2]{}
+	\normalsize\normalfont{\Large\bfseries 目次}\smallskip
+	\startcontents[chapters]
+	\printcontents[chapters]{}{1}[2]{}
 \end{center}\vspace{-3em}}
 \newif\if@link
 \@linkfalse
