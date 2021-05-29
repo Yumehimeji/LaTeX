@@ -15,7 +15,7 @@ LaTeXに関する色々。エンジンにLuaLaTeXを使用している。
 |---|---|---|
 |sec=normal|toc=normal(default)|normalps|
 |sec=1|toc=1|ps=1|
-|sec=2| |ps=2|
+|sec=2|toc=2|ps=2|
 #### 補足
 - toc=normalオプションでは見出しの「目次」の表示位置を変えることができる。`\tableofcontents[pos]`
 posはl(left),c(center,default),r(right)から選択する。
