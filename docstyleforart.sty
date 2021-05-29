@@ -7,7 +7,7 @@
 \RequirePackage[luatex]{graphicx}
 \RequirePackage[luatex,table,hyperref]{xcolor}
 \RequirePackage{amssymb,mathtools}
-\RequirePackage{float}
+\RequirePackage{float,adjmulticol}
 \RequirePackage[unicode=true,linktoc=all,%
 bookmarksnumbered=true,bookmarksopen=true,%
 colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
@@ -119,6 +119,33 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 \@starttoc{toc}\end{shapebox2}}
 }
 %
+\DeclareOption{toc=2}{
+	\hypersetup{linktoc=page}
+	\setcounter{tocdepth}{2}
+	\titlecontents{cchapter}[2em]{\thispagestyle{mokuji}\large}{\hspace*{\fill}\thecontentslabel\quad}{}{\hspace*{\fill}}[]
+	\titlecontents{section}[-2em]{}{\makebox[2cm]{\thecontentslabel}}{}{\titlerule*{.}\thecontentspage}
+	\titlecontents{subsection}[0em]{}{\makebox[2cm]{\thecontentslabel}}{}{\titlerule*{.}\thecontentspage}
+	\def\@starttoc#1{%
+		\begingroup
+		\makeatletter
+		\begin{adjmulticols}{1}{-1em}{-1em}
+			\@input{\jobname.#1}\thispagestyle{mokuji}%
+		\end{adjmulticols}
+		\if@filesw
+		\expandafter\newwrite\csname tf@#1\endcsname
+		\immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
+		\fi
+		\@nobreakfalse
+		\endgroup}
+	\renewcommand{\tableofcontents}{%
+		\hypertarget{mokuji}{}\begin{center}\LARGE\bfseries 目次\end{center}
+		\@starttoc{toc}}
+	\renewcommand{\l@chapter}[2]{\end{adjmulticols}
+	\l@cchapter{#1}{#2}\begin{adjmulticols}{2}{-1em}{-1em}}
+	\columnseprule=.4pt
+	\columnsep=-10pt
+}
+%
 \ExecuteOptions{toc=normal}
 \ProcessOptions\relax
 %
@@ -186,3 +213,11 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 %
 \renewcommand*{\figurename}{\faIcon{arrow-circle-up}図}
 \renewcommand*{\tablename}{\faIcon{arrow-circle-down}表}
+\newcommand*{\ctext}[1]{\raise0.2ex\hbox{\textcircled{\scriptsize{#1}}}}
+\newcommand*{\sfrac}[2]{{}^{#1}\!/_{#2}}
+\NewDocumentCommand{\dd}{s o m m}{\IfBooleanTF{#1}{\IfValueTF{#2}{\frac{\mathrm{d}^{#2}#3}{\mathrm{d}#4^{#2}}}{\frac{\mathrm{d}#3}{\mathrm{d}#4}}}{\IfValueTF{#2}{\frac{\mathrm{d}^{#2}#3}{\mathrm{d}#4^{#2}}}{\frac{\mathrm{d}#3}{\mathrm{d}#4}}}}
+\NewDocumentCommand{\del}{s o m m}{\IfBooleanTF{#1}{\frac{\partial^2\IfValueTF{#2}{#2}{}}{\partial #3\partial #4}}{\IfValueTF{#2}{\frac{\partial^{#2} #3}{\partial #4^{#2}}}{\frac{\partial #3}{\partial #4}}}}
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\curly}[1]{\left\{#1\right\}}
+\newcommand{\bracket}[1]{\left[#1\right]}
+\newcommand{\abs}[1]{\left|#1\right|}
