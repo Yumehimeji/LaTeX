@@ -9,8 +9,9 @@
 \RequirePackage[luatex,table,hyperref]{xcolor}
 \RequirePackage{amssymb,mathtools}
 \RequirePackage{float}
+\RequirePackage{adjmulticol}
 \RequirePackage[unicode=true,linktoc=all,%
-bookmarksnumbered=true,bookmarksopen=true,%
+bookmarksnumbered=true,bookmarksdepth=4,%
 colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 \RequirePackage[nameinlink]{cleveref}
 \RequirePackage{caption}
@@ -20,16 +21,21 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 \usetikzlibrary{shadings,calc}
 \RequirePackage{varwidth,xparse}
 %
+\titlecontents{chapter}[0em]{\smallskip\large\bfseries}{\makebox[4em][l]{\thecontentslabel}}{}{\if@ptc\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}\else\hfill\thecontentspage\fi}[\smallskip]
+\titlecontents{section}[1em]{}{\makebox[2.5em][l]{\thecontentslabel}}{}{\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
+\titlecontents{subsection}[3.5em]{}{\makebox[3em][l]{\thecontentslabel}}{}{\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
+\titlecontents{subsubsection}[6.5em]{}{\makebox[4em][l]{\thecontentslabel}}{}{\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
+%
 \DeclareTColorBox{shapebox2}{ O{blue} m d"" !O{} }{enhanced,colframe=#1!50!black,colback=#1!10!white,
 	colbacktitle=#1!5!yellow!10!white, fonttitle=\large\bfseries,coltitle=black,IfValueTF={#3}{watermark text={#3}}{},
 	attach boxed title to top center= {yshift=-0.25mm-\tcboxedtitleheight/2,yshifttext=2mm-\tcboxedtitleheight/2}, 
 	boxed title style={boxrule=0.5mm, frame code={ \path[tcb fill frame] ([xshift=-6mm]frame.west) -- (frame.north west) -- (frame.north east) -- ([xshift=6mm]frame.east) -- (frame.south east) -- (frame.south west) -- cycle; }, 
-	interior code={ \path[tcb fill interior] ([xshift=-3mm]interior.west) -- (interior.north west) -- (interior.north east) -- ([xshift=3mm]interior.east) -- (interior.south east) -- (interior.south west) -- cycle;} },
+		interior code={ \path[tcb fill interior] ([xshift=-3mm]interior.west) -- (interior.north west) -- (interior.north east) -- ([xshift=3mm]interior.east) -- (interior.south east) -- (interior.south west) -- cycle;} },
 	title={#2},#4}
 \newcommand{\PartialToc}{\vspace{1em}\begin{center}
-	\normalsize\normalfont{\Large\bfseries 目次}\smallskip
-	\startcontents[chapters]
-	\printcontents[chapters]{}{1}[2]{}
+		\normalsize\normalfont{\Large\bfseries 目次}\smallskip
+		\startcontents[chapters]
+		\printcontents[chapters]{}{1}[2]{}
 \end{center}\vspace{-3em}}
 \newif\if@link
 \@linkfalse
@@ -79,8 +85,8 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 }
 %
 \DeclareOption{sec=2}{
-\titleformat{\chapter}[display]{\huge\bfseries}{\hypertarget{mokuji\thechapter}{}
-	\hspace*{-3pt}\begin{tikzpicture}
+\titleformat{\chapter}[display]{\huge\bfseries\filcenter}{\hypertarget{mokuji\thechapter}{}}{-2em}{
+	\begin{tikzpicture}
 		\pgfmathparse{100*rnd}
 		\edef\tmp{\pgfmathresult}
 		\pgfmathparse{100*sin(rnd*pi/2 r)}
@@ -92,7 +98,7 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 		\node at (\linewidth/2,1) {#1};
 		\node at (\linewidth/2,2.8) {第\thechapter 章};
 		\node at (\linewidth-2em,0.5) {\footnotesize\if@link \hyperlink{mokuji}{\color{magenta}\faIcon{reply-all}}\else \fi};
-	\end{tikzpicture}}{-1em}{}[
+	\end{tikzpicture}}[
 \if@ptc{\PartialToc}\else \fi]
 \titleformat{\section}[hang]{\Large\bfseries}{\begin{tikzpicture}
 		\pgfmathparse{100*rnd}
@@ -139,15 +145,47 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 }
 %
 \DeclareOption{partialtoc}{\@ptctrue
-\setcounter{tocdepth}{0}}
+	\setcounter{tocdepth}{0}}
+%
+\DeclareOption{toc=2}{
+\if@ptc
+\renewcommand{\tableofcontents}[1][c]{\thispagestyle{mokuji}
+	\hypertarget{mokuji}{}\noindent\makebox[\linewidth][#1]{\LARGE\bfseries 目次}
+	\bigskip\@starttoc{toc}\bigskip}
+\renewcommand{\PartialToc}{\begin{multicols}{2}[\begin{center}\Large\bfseries 目次\end{center}]
+		\normalsize\normalfont\startcontents[chapters]
+		\printcontents[chapters]{}{1}[2]{}
+\end{multicols}}
+\else
+\hypersetup{linktoc=page}
+\setcounter{tocdepth}{2}
+\titlecontents{cchapter}[2em]{\thispagestyle{mokuji}\large}{\hspace*{\fill}\thecontentslabel\quad}{}{\hspace*{\fill}}[]
+\titlecontents{section}[-2em]{}{\makebox[2cm]{\thecontentslabel}}{}{\titlerule*{.}\thecontentspage}
+\titlecontents{subsection}[0em]{}{\makebox[2cm]{\thecontentslabel}}{}{\titlerule*{.}\thecontentspage}
+\def\@starttoc#1{%
+	\begingroup
+	\makeatletter
+	\begin{adjmulticols}{1}{-1em}{-1em}
+		\@input{\jobname.#1}\thispagestyle{mokuji}%
+	\end{adjmulticols}
+	\if@filesw
+	\expandafter\newwrite\csname tf@#1\endcsname
+	\immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
+	\fi
+	\@nobreakfalse
+	\endgroup}
+\renewcommand{\tableofcontents}{%
+	\hypertarget{mokuji}{}\begin{center}\LARGE\bfseries 目次\end{center}
+	\@starttoc{toc}}
+\renewcommand{\l@chapter}[2]{\end{adjmulticols}
+\l@cchapter{#1}{#2}\begin{adjmulticols}{2}{-1em}{-1em}}
+\fi
+\columnseprule=.4pt
+\columnsep=-10pt
+}
 %
 \ExecuteOptions{toc=normal}
 \ProcessOptions\relax
-%
-\titlecontents{chapter}[0em]{\smallskip\large\bfseries}{\makebox[4em][l]{\thecontentslabel}}{}{\if@ptc\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}\else\hfill\thecontentspage\fi}[\smallskip]
-\titlecontents{section}[1em]{}{\makebox[2.5em][l]{\thecontentslabel}}{}{\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
-\titlecontents{subsection}[3.5em]{}{\makebox[3em][l]{\thecontentslabel}}{}{\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
-\titlecontents{subsubsection}[6.5em]{}{\makebox[4em][l]{\thecontentslabel}}{}{\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
 %
 \newcommand{\crefrangeconjunction}{{〜}}%
 \newcommand{\crefrangepreconjunction}{}%
@@ -190,21 +228,40 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 \crefrangeformat{subsubsection}{#3#1#4{〜}#5#2#6{節}}%
 \crefmultiformat{subsubsection}{#2#1#3{節}}{, #2#1#3{節}}{, #2#1#3}{, #2#1#3{節}}%
 %
+\NewDocumentCommand{\setheadcontents}{m m m}{
+	\def\@lh{#1}\def\@ch{#2}\def\@rh{#3}}
+\NewDocumentCommand{\setfootcontents}{m m m}{
+	\def\@lf{#1}\def\@cf{#2}\def\@rf{#3}}
+\setheadcontents{}{第\thechapter 章\quad\chaptertitle}{}
+\setfootcontents{}{\thepage}{}
 \newpagestyle{ps=2}[]{
-	\sethead{}{第\thechapter 章\quad\chaptertitle}{}
-	\setfoot{}{\raisebox{-1em}{\begin{tikzpicture}
-			\tikzling[scale=0.5,speech={\thepage}]
-	\end{tikzpicture}}}{}
+	\sethead{\@lh}{\@ch}{\@rh}
+	\setfoot{\@lf}{\raisebox{-1.5em}{\begin{tikzpicture}
+			\tikzling[scale=0.5,speech={\@cf}]
+	\end{tikzpicture}}}{\@rf}
 }
 \newpagestyle{ps=1}[]{
 	\sethead{\begin{tikzpicture}[remember picture,overlay]
 			\fill[top color=green!60!] (current page.north east) rectangle ([yshift=-\paperwidth/8]current page.north west);
 			\fill[bottom color=yellow!60!,top color=white] (current page.south east) rectangle ([yshift=\paperwidth/8]current page.south west);
-	\end{tikzpicture}}{第\thechapter 章\quad\chaptertitle}{}
-	\setfoot{}{\large\thepage}{}
+	\end{tikzpicture}\@lh}{\@ch}{\@rh}
+	\setfoot{\@lf}{\large\@cf}{\@rf}
 }
 \newpagestyle{normalps}[]{
-	\sethead{}{\thechapter~~\chaptertitle}{}
+	\sethead{\@lh}{\@ch}{\@rh}
 	\headrule\footrule
-	\setfoot{}{\thepage}{}
+	\setfoot{\@lf}{\@cf}{\@rf}
 }
+\newpagestyle{mokuji}[\large]{
+	\sethead{}{}{}
+	\setfoot{}{\roman{page}}{}
+}
+%
+\newcommand*{\ctext}[1]{\raise0.2ex\hbox{\textcircled{\scriptsize{#1}}}}
+\newcommand*{\sfrac}[2]{{}^{#1}\!/_{#2}}
+\NewDocumentCommand{\dd}{s o m m}{\IfBooleanTF{#1}{\IfValueTF{#2}{\frac{\mathrm{d}^{#2}#3}{\mathrm{d}#4^{#2}}}{\frac{\mathrm{d}#3}{\mathrm{d}#4}}}{\IfValueTF{#2}{\frac{\mathrm{d}^{#2}#3}{\mathrm{d}#4^{#2}}}{\frac{\mathrm{d}#3}{\mathrm{d}#4}}}}
+\NewDocumentCommand{\del}{s o m m}{\IfBooleanTF{#1}{\frac{\partial^2\IfValueTF{#2}{#2}{}}{\partial #3\partial #4}}{\IfValueTF{#2}{\frac{\partial^{#2} #3}{\partial #4^{#2}}}{\frac{\partial #3}{\partial #4}}}}
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\curly}[1]{\left\{#1\right\}}
+\newcommand{\bracket}[1]{\left[#1\right]}
+\newcommand{\abs}[1]{\left|#1\right|}
