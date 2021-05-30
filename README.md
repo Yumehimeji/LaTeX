@@ -9,7 +9,7 @@ LaTeXに関する色々。エンジンにLuaLaTeXを使用している。
 ### 使用方法
 目次と見出しのデザインの選択はoptionを指定するだけ。ヘッダとフッタは`\pagestyle{}`で指定。
 
-ヘッダとフッタの内容は`\setheadcontents{左上}{上中央}{右上},\setfootcontents{左下}{下中央}{右下}`で指定。
+ヘッダとフッタの内容は`\setheadcontents{左上}{上中央}{右上}`,`\setfootcontents{左下}{下中央}{右下}`で指定可能。
 #### 一覧
 |見出しoption|目次option|ヘッダ、フッタ(pagestyle)|
 |---|---|---|
