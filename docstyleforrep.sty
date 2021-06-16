@@ -21,7 +21,7 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 \usetikzlibrary{shadings,calc}
 \RequirePackage{varwidth,xparse}
 %
-\titlecontents{chapter}[0em]{\smallskip\large\bfseries}{\makebox[4em][l]{\thecontentslabel}}{}{\if@ptc\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}\else\hfill\thecontentspage\fi}[\smallskip]
+\titlecontents{chapter}[0em]{\smallskip\large\bfseries\thispagestyle{mokuji}}{\makebox[4em][l]{\thecontentslabel}}{}{\if@ptc\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}\else\hfill\thecontentspage\fi}[\smallskip]
 \titlecontents{section}[1em]{}{\makebox[2.5em][l]{\thecontentslabel}}{}{\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
 \titlecontents{subsection}[3.5em]{}{\makebox[3em][l]{\thecontentslabel}}{}{\quad\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
 \titlecontents{subsubsection}[6.5em]{}{\makebox[4em][l]{\thecontentslabel}}{}{\titlerule*[1em]{.}\makebox[2em][r]{\thecontentspage}}
@@ -33,7 +33,7 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 		interior code={ \path[tcb fill interior] ([xshift=-3mm]interior.west) -- (interior.north west) -- (interior.north east) -- ([xshift=3mm]interior.east) -- (interior.south east) -- (interior.south west) -- cycle;} },
 	title={#2},#4}
 \newcommand{\PartialToc}{\vspace{1em}\begin{center}
-		\normalsize\normalfont{\Large\bfseries 目次}\smallskip
+		\normalsize\normalfont{\Large\bfseries\contentsname}\smallskip
 		\startcontents[chapters]
 		\printcontents[chapters]{}{1}[2]{}
 \end{center}\vspace{-3em}}
@@ -130,17 +130,17 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 }
 %
 \DeclareOption{toc=normal}{
-\renewcommand{\tableofcontents}[1][c]{\thispagestyle{mokuji}
-\hypertarget{mokuji}{}\noindent\makebox[\linewidth][#1]{\LARGE\bfseries 目次}
-\bigskip\@starttoc{toc}\bigskip}
+\renewcommand{\tableofcontents}[1][c]{
+\hypertarget{mokuji}{}\noindent\makebox[\linewidth][#1]{\LARGE\bfseries\contentsname}
+\bigskip\@starttoc{toc}\thispagestyle{mokuji}\bigskip}
 }
 %
 \DeclareOption{toc=1}{
-\renewcommand{\PartialToc}{\normalsize\normalfont\begin{shapebox2}[yellow]{目次}"Contents"[drop fuzzy shadow,breakable]
+\renewcommand{\PartialToc}{\normalsize\normalfont\begin{shapebox2}[yellow]{\contentsname}"Contents"[drop fuzzy shadow,breakable]
 		\startcontents[chapters]
 		\printcontents[chapters]{}{1}[2]{}\end{shapebox2}\vspace{-3em}}
 \renewcommand{\tableofcontents}[1][orange]{\thispagestyle{mokuji}
-\hypertarget{mokuji}{}\begin{shapebox2}[#1]{目次}"Contents"[drop fuzzy shadow,breakable]
+\hypertarget{mokuji}{}\begin{shapebox2}[#1]{\contentsname}"Contents"[drop fuzzy shadow,breakable]
 \@starttoc{toc}\end{shapebox2}}
 }
 %
@@ -150,9 +150,9 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 \DeclareOption{toc=2}{
 \if@ptc
 \renewcommand{\tableofcontents}[1][c]{\thispagestyle{mokuji}
-	\hypertarget{mokuji}{}\noindent\makebox[\linewidth][#1]{\LARGE\bfseries 目次}
+	\hypertarget{mokuji}{}\noindent\makebox[\linewidth][#1]{\LARGE\bfseries\contentsname}
 	\bigskip\@starttoc{toc}\bigskip}
-\renewcommand{\PartialToc}{\begin{multicols}{2}[\begin{center}\Large\bfseries 目次\end{center}]
+\renewcommand{\PartialToc}{\begin{multicols}{2}[\begin{center}\Large\bfseries\contentsname\end{center}]
 		\normalsize\normalfont\startcontents[chapters]
 		\printcontents[chapters]{}{1}[2]{}
 \end{multicols}}
@@ -174,8 +174,8 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 	\fi
 	\@nobreakfalse
 	\endgroup}
-\renewcommand{\tableofcontents}{%
-	\hypertarget{mokuji}{}\begin{center}\LARGE\bfseries 目次\end{center}
+\renewcommand{\tableofcontents}[1][c]{%
+	\hypertarget{mokuji}{}\begin{center}\makebox[\linewidth][#1]{\LARGE\bfseries\contentsname}\end{center}
 	\@starttoc{toc}}
 \renewcommand{\l@chapter}[2]{\end{adjmulticols}
 \l@cchapter{#1}{#2}\begin{adjmulticols}{2}{-1em}{-1em}}
