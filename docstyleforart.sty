@@ -33,6 +33,15 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 		interior code={ \path[tcb fill interior] ([xshift=-3mm]interior.west) -- (interior.north west) -- (interior.north east) -- ([xshift=3mm]interior.east) -- (interior.south east) -- (interior.south west) -- cycle;} },
 	title={#2},#4}
 %
+\DeclareOption{pluspack}{
+\usepackage[version-1-compatibility]{siunitx}
+\sisetup{range-phrase=～,list-final-separator={,},list-pair-separator={,}}
+\usepackage{ulem,bm}
+\usepackage[version=4]{mhchem}
+\usepackage[at]{easylist}
+\usepackage[shortlabels]{enumitem}
+}
+%
 \DeclareOption{withlink}{\@linktrue}
 %
 \DeclareOption{sec=normal}{
@@ -120,28 +129,9 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 }
 %
 \DeclareOption{toc=2}{
-	\hypersetup{linktoc=page}
-	\setcounter{tocdepth}{2}
-	\titlecontents{cchapter}[2em]{\thispagestyle{mokuji}\large}{\hspace*{\fill}\thecontentslabel\quad}{}{\hspace*{\fill}}[]
-	\titlecontents{section}[-2em]{}{\makebox[2cm]{\thecontentslabel}}{}{\titlerule*{.}\thecontentspage}
-	\titlecontents{subsection}[0em]{}{\makebox[2cm]{\thecontentslabel}}{}{\titlerule*{.}\thecontentspage}
-	\def\@starttoc#1{%
-		\begingroup
-		\makeatletter
-		\begin{adjmulticols}{1}{-1em}{-1em}
-			\@input{\jobname.#1}\thispagestyle{mokuji}%
-		\end{adjmulticols}
-		\if@filesw
-		\expandafter\newwrite\csname tf@#1\endcsname
-		\immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
-		\fi
-		\@nobreakfalse
-		\endgroup}
-	\renewcommand{\tableofcontents}{%
-		\hypertarget{mokuji}{}\begin{center}\LARGE\bfseries 目次\end{center}
-		\@starttoc{toc}}
-	\renewcommand{\l@chapter}[2]{\end{adjmulticols}
-	\l@cchapter{#1}{#2}\begin{adjmulticols}{2}{-1em}{-1em}}
+	\renewcommand{\tableofcontents}[1][c]{%
+		\hypertarget{mokuji}{}\begin{center}\makebox[\linewidth][#1]{\LARGE\bfseries 目次}\end{center}
+		\begin{adjmulticols}{2}{-1em}{-1em}\@starttoc{toc}\end{adjmulticols}}
 	\columnseprule=.4pt
 	\columnsep=-10pt
 }
@@ -192,23 +182,29 @@ colorlinks=true,linkcolor=blue,citecolor=red]{hyperref}
 \crefrangeformat{subsubsection}{#3#1#4{〜}#5#2#6{節}}%
 \crefmultiformat{subsubsection}{#2#1#3{節}}{, #2#1#3{節}}{, #2#1#3}{, #2#1#3{節}}%
 %
+\newcommand{\setheadcontents}[3]{
+	\def\@lh{#1}\def\@ch{#2}\def\@rh{#3}}
+\newcommand{\setfootcontents}[3]{
+	\def\@lf{#1}\def\@cf{#2}\def\@rf{#3}}
+\setheadcontents{}{\S\,\thesection\quad\sectiontitle}{}
+\setfootcontents{}{\thepage}{}
 \newpagestyle{ps=2}[]{
-	\sethead{}{}{}
-	\setfoot{}{\raisebox{-1em}{\begin{tikzpicture}
-			\tikzling[scale=0.5,speech={\thepage}]
-	\end{tikzpicture}}}{}
+	\sethead{\@lh}{\@ch}{\@rh}
+	\setfoot{\@lf}{\raisebox{-1em}{\begin{tikzpicture}
+			\tikzling[scale=0.5,speech={\@cf}]
+	\end{tikzpicture}}}{\@rf}
 }
 \newpagestyle{ps=1}[]{
 	\sethead{\begin{tikzpicture}[remember picture,overlay]
 			\fill[top color=green!60!] (current page.north east) rectangle ([yshift=-\paperwidth/8]current page.north west);
 			\fill[bottom color=yellow!60!,top color=white] (current page.south east) rectangle ([yshift=\paperwidth/8]current page.south west);
-	\end{tikzpicture}}{\S\,\thesection\quad\sectiontitle}{}
-	\setfoot{}{\large\thepage}{}
+	\end{tikzpicture}\@lh}{\@ch}{\@rh}
+	\setfoot{\@lf}{\@cf}{\@rf}
 }
 \newpagestyle{normalps}[]{
-	\sethead{}{\thesection~~\sectiontitle}{}
+	\sethead{\@lh}{\@ch}{\@rh}
 	\headrule\footrule
-	\setfoot{}{\thepage}{}
+	\setfoot{\@lf}{\@cf}{\@rf}
 }
 %
 \renewcommand*{\figurename}{\faIcon{arrow-circle-up}図}
